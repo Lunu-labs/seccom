@@ -53,7 +53,20 @@ impl App {
             }
         }
     }
-
+    fn read_input(&mut self) -> crossterm::Result<()> {
+        loop {
+            if let Event::Key(key_event) = read()? {
+                match key_event.code {
+                    KeyCode::Char('p') => self.process_event(InputEvent { event_type: EventType::ScrollUp }),
+                    KeyCode::Char('n') => self.process_event(InputEvent { event_type: EventType::ScrollDown }),
+                    KeyCode::Char(c) => self.process_event(InputEvent { event_type: EventType::TextInput(c) }),
+                    KeyCode::Esc => break,
+                    _ => {},
+                }
+            }
+        }
+        Ok(())
+    }
     fn render(&self) {
         execute!(
                 stdout(),
